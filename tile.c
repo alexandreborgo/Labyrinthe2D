@@ -20,10 +20,9 @@ void freeTiles(tile** tls, int h) {
 	free(tls);
 }
 
-void initTile(tile* tl, int x, int y, int wall, unsigned char flags) {
+void initTile(tile* tl, int x, int y, int flags) {
 	tl->x = x; 
 	tl->y = y;
-	tl->wall = wall;
 	tl->flags = flags;
 }
 
@@ -50,8 +49,8 @@ void printTileTop(tile* tl, tile* ttl) {
 		printf("+-----");
 	}
 	else {
-		int wall1 = tl->wall & TOP_WALL; // top wall of the tile
-		int wall2 = ttl->wall & BOTTOM_WALL; // bottom wal of the tile
+		int wall1 = tl->flags & TOP_WALL; // top wall of the tile
+		int wall2 = ttl->flags & BOTTOM_WALL; // bottom wal of the tile
 
 		if(wall1 || wall2) {
 			printf("+-----");
@@ -67,8 +66,8 @@ void printTileLeft(tile* tl, tile* ltl) {
 		printf("|");
 	}
 	else {
-		int wall1 = tl->wall & LEFT_WALL; // left wall of the tile
-		int wall2 = ltl->wall & RIGHT_WALL; // right wall of the left tile
+		int wall1 = tl->flags & LEFT_WALL; // left wall of the tile
+		int wall2 = ltl->flags & RIGHT_WALL; // right wall of the left tile
 		
 		if(wall1 || wall2) {
 			printf("|");

@@ -21,8 +21,8 @@ void initLabyrinthe(labyrinthe* lab, int h, int l) {
 	int i, j;
 	for(i=0; i<lab->h; i++) {
 		for(j=0; j<lab->l; j++) {
-			int wall = (unsigned char) rand() % 15;
-			initTile(&(lab->tiles[i][j]), i, j, wall, NO_FLAG);
+			int flags = rand() % 15;
+			initTile(&(lab->tiles[i][j]), i, j, flags);
 		}
 	}
 }
@@ -40,7 +40,7 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	for(i=0; i<lab->h; i++) {
 		for(j=0; j<lab->l; j++) {
 			int wall = 15;
-			unsigned char flags = NO_FLAG;
+			int flags = ALL_WALL;
 
 			if(lab->x_in == j && lab->y_in == i) {
 				flags = IN | GUY;
@@ -49,15 +49,15 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 				flags = OUT;
 			}
 
-			initTile(&(lab->tiles[i][j]), j, i, wall, flags);
+			initTile(&(lab->tiles[i][j]), j, i, flags);
 		}
 	}
 
 	for(i=0; i<lab->h; i++) {
 		for(j=0; j<lab->l-1; j++) {
 			if((rand() % 100) + 1 >= CHANCE) {
-				lab->tiles[i][j].wall = lab->tiles[i][j].wall & ~RIGHT_WALL;
-				lab->tiles[i][j+1].wall = lab->tiles[i][j+1].wall & ~LEFT_WALL;
+				lab->tiles[i][j].flags = lab->tiles[i][j].flags & ~RIGHT_WALL;
+				lab->tiles[i][j+1].flags = lab->tiles[i][j+1].flags & ~LEFT_WALL;
 			}
 		}
 	}
@@ -65,8 +65,8 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	for(i=0; i<lab->h-1; i++) {
 		for(j=0; j<lab->l; j++) {
 			if((rand() % 100) + 1 >= CHANCE) {
-				lab->tiles[i][j].wall = lab->tiles[i][j].wall & ~BOTTOM_WALL;
-				lab->tiles[i+1][j].wall = lab->tiles[i+1][j].wall & ~TOP_WALL;
+				lab->tiles[i][j].flags = lab->tiles[i][j].flags & ~BOTTOM_WALL;
+				lab->tiles[i+1][j].flags = lab->tiles[i+1][j].flags & ~TOP_WALL;
 			}
 		}
 	}

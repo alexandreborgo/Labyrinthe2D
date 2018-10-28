@@ -7,14 +7,14 @@
 #include "tile.h"
 
 /* ==================== DEBUG ==================== */
-void printBin(unsigned char b) {
+void printBin(int b) {
 	int i;
 	for(i=15; i>=0; i--)
 		printf("%d", (b>>i)&1);
 	printf("\n");
 }
 
-void printDir(unsigned char dir) {
+void printDir(int dir) {
     if(dir == TOP)
         printf("TOP\n");
     else if(dir == LEFT)
@@ -29,7 +29,7 @@ void printDir(unsigned char dir) {
 
 /* ==================== FUNC ==================== */
 
-tile* getCaseInDir(labyrinthe* l, tile* t, unsigned char dir) {
+tile* getCaseInDir(labyrinthe* l, tile* t, int dir) {
     if(dir == TOP)
         return &(l->tiles[t->y-1][t->x]);
     else if(dir == LEFT)
@@ -60,7 +60,13 @@ int run2(labyrinthe* l, tile* t) {
     char dir;
     for(dir=LEFT; dir<=TOP; dir=dir<<1) {        
         // check if there's a wall
-        if(!(t->wall & dir)) {
+        printDir(dir);
+        printBin(t->flags);
+        printBin(dir);
+        printf("\n");
+        char c;
+        scanf("%c", &c);
+        if(!(t->flags & dir)) {
             // check if the guy already visited the tile or not
             tile* tl = getCaseInDir(l, t, dir);
             if(!(tl->flags & VISITED)) {
