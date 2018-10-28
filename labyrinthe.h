@@ -26,6 +26,7 @@ typedef struct lab {
 labyrinthe* allocLabyrinthe();
 void generateLabyrinthe(labyrinthe* lab, int h, int l);
 void initLabyrintheFromFile(labyrinthe* l, char* filename);
+void saveLabyrinthe(labyrinthe* l, char* filename);
 void displayLabyrinthe2(labyrinthe* lab);
 void freeLabyrinthe(labyrinthe* lab);
 

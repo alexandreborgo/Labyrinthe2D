@@ -53,6 +53,24 @@ void initLabyrintheFromFile(labyrinthe* l, char* filename) {
 	fclose(f);
 }
 
+void saveLabyrinthe(labyrinthe* l, char* filename) {
+	FILE* f = fopen(filename, "w");
+	fprintf(f, "%d %d ", l->h, l->l);
+	fprintf(f, "%d %d ", l->x_in, l->y_in);
+	fprintf(f, "%d %d\n", l->x_ou, l->y_ou);
+
+	int i, j;
+	for(i=0; i<l->h; i++) {
+		for(j=0; j<l->l; j++) {
+			// keep only walls, in and out
+			int flags = l->tiles[i][j].flags & CLEAN_FLAG;
+			fprintf(f, "%d ", flags);
+		}
+		fprintf(f, "\n");
+	}
+	fclose(f);
+}
+
 void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	lab->h = h;
 	lab->l = l;
