@@ -60,12 +60,6 @@ int run2(labyrinthe* l, tile* t) {
     char dir;
     for(dir=LEFT; dir<=TOP; dir=dir<<1) {        
         // check if there's a wall
-        printDir(dir);
-        printBin(t->flags);
-        printBin(dir);
-        printf("\n");
-        char c;
-        scanf("%c", &c);
         if(!(t->flags & dir)) {
             // check if the guy already visited the tile or not
             tile* tl = getCaseInDir(l, t, dir);
