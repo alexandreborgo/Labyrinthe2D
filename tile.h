@@ -12,6 +12,7 @@
 #define GUY 64 			// 0000 0100 0000 
 #define ROCK 128 		// 0000 1000 0000 
 #define VISITED 256 	// 0001 0000 0000
+#define CLEAN_FLAG 63	// 0000 0011 1111
 
 #define NRM  "\x1B[0m"
 #define RED  "\x1B[31m"
