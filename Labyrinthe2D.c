@@ -65,7 +65,7 @@ int main() {
 
 			if(choice == '2') {
 				emptyShittyBuffer();
-				printf("Do you want to save this labyrinthe? [y/N] ");
+				printf("Do you want to save this labyrinthe? [y/n] ");
 				scanf("%c", input);
 	
 				if(input[0] == 'y') {
