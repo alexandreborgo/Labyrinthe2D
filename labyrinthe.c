@@ -43,10 +43,10 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 			int flags = ALL_WALL;
 
 			if(lab->x_in == j && lab->y_in == i) {
-				flags = IN | GUY;
+				flags |= IN | GUY;
 			}
 			else if(lab->x_ou == j && lab->y_ou == i) {
-				flags = OUT;
+				flags |= OUT;
 			}
 
 			initTile(&(lab->tiles[i][j]), j, i, flags);
