@@ -3,17 +3,29 @@
 
 #include "tile.h"
 
-struct lab {
+#define CHANCE 44
+
+typedef struct lab {
+	// size
 	int h;
 	int l;
-	tile** tiles;
-};
-typedef struct lab labyrinthe;
 
+	// map
+	tile** tiles;
+
+	// in
+	int x_in;
+	int y_in;
+
+	// out
+	int x_ou;
+	int y_ou;
+	
+} labyrinthe;
 
 labyrinthe* allocLabyrinthe();
 void initLabyrinthe(labyrinthe* lab, int h, int l);
-void displayLabyrinthe(labyrinthe* lab);
+void generateLabyrinthe(labyrinthe* lab, int h, int l);
 void displayLabyrinthe2(labyrinthe* lab);
 void freeLabyrinthe(labyrinthe* lab);
 

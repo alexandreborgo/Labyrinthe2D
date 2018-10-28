@@ -3,10 +3,6 @@
 
 #include "tile.h"
 
-tile* allocTile() {
-	return (tile*) malloc(sizeof(tile*));
-}
-
 tile** allocTiles(int h, int l) {
 	tile** tl = malloc(sizeof(tile) * h);
 	int i = 0;
@@ -14,11 +10,6 @@ tile** allocTiles(int h, int l) {
 		tl[i] = malloc(sizeof(tile) * l);
 	}
 	return tl;
-}
-
-
-void freeTile(tile* tl) {
-	free(tl);
 }
 
 void freeTiles(tile** tls, int h) {
@@ -29,14 +20,29 @@ void freeTiles(tile** tls, int h) {
 	free(tls);
 }
 
-void initTile(tile* tl, int x, int y, unsigned char wall) {
+void initTile(tile* tl, int x, int y, int wall, unsigned char flags) {
 	tl->x = x; 
 	tl->y = y;
 	tl->wall = wall;
+	tl->flags = flags;
 }
 
-void printTile(tile tl) {
-	printf("|%5c", ' ');
+void printTile(tile* tl) {
+	if(tl->flags & GUY) {
+		printf("%s %s %s", YEL, "O_O", NRM);
+	}
+	else if(tl->flags & IN) {
+		printf("%s %s  %s", RED, "IN", NRM);
+	}
+	else if(tl->flags & ROCK) {
+		printf("%s  ·  %s", BLU, NRM);
+	}
+	else {
+		if(tl->flags & OUT)
+			printf("%s %s %s", BLU, "OUT", NRM);
+		else
+			printf("%5c", ' ');
+	}
 }
 
 void printTileTop(tile* tl, tile* ttl) {
@@ -44,8 +50,8 @@ void printTileTop(tile* tl, tile* ttl) {
 		printf("+-----");
 	}
 	else {
-		int wall1 = ((tl->wall >> 3) & 1);
-		int wall2 = ((ttl->wall >> 3) & 1);
+		int wall1 = tl->wall & TOP_WALL; // top wall of the tile
+		int wall2 = ttl->wall & BOTTOM_WALL; // bottom wal of the tile
 
 		if(wall1 || wall2) {
 			printf("+-----");
@@ -58,17 +64,17 @@ void printTileTop(tile* tl, tile* ttl) {
 
 void printTileLeft(tile* tl, tile* ltl) {
 	if(ltl == NULL) {
-		printf("|%5c", ' ');
+		printf("|");
 	}
 	else {
-		int wall1 = ((tl->wall >> 2) & 1);
-		int wall2 = ((ltl->wall >> 2) & 1);
-
+		int wall1 = tl->wall & LEFT_WALL; // left wall of the tile
+		int wall2 = ltl->wall & RIGHT_WALL; // right wall of the left tile
+		
 		if(wall1 || wall2) {
-			printf("|%5c", ' ');
+			printf("|");
 		}
 		else {
-			printf(" %5c", ' ');
+			printf(" ");
 		}
 	}
 }

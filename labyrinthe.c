@@ -21,24 +21,55 @@ void initLabyrinthe(labyrinthe* lab, int h, int l) {
 	int i, j;
 	for(i=0; i<lab->h; i++) {
 		for(j=0; j<lab->l; j++) {
-			unsigned char wall = (unsigned char) rand() % 128;
-			initTile(&(lab->tiles[i][j]), i, j, wall);
+			int wall = (unsigned char) rand() % 15;
+			initTile(&(lab->tiles[i][j]), i, j, wall, NO_FLAG);
 		}
 	}
 }
 
-void displayLabyrinthe(labyrinthe* lab) {
-	int i, j, k;
+void generateLabyrinthe(labyrinthe* lab, int h, int l) {
+	lab->h = h;
+	lab->l = l;
+	lab->tiles = allocTiles(h, l);
+	lab->x_in = rand() % lab->l;
+	lab->y_in = rand() % lab->h;
+	lab->x_ou = rand() % lab->l;
+	lab->y_ou = rand() % lab->h;
+
+	int i, j;
 	for(i=0; i<lab->h; i++) {
-		for(k=0; k<lab->l; k++)  printf("+-----");
-		printf("+\n");
 		for(j=0; j<lab->l; j++) {
-			printTile(lab->tiles[i][j]);
+			int wall = 15;
+			unsigned char flags = NO_FLAG;
+
+			if(lab->x_in == j && lab->y_in == i) {
+				flags = IN | GUY;
+			}
+			else if(lab->x_ou == j && lab->y_ou == i) {
+				flags = OUT;
+			}
+
+			initTile(&(lab->tiles[i][j]), j, i, wall, flags);
 		}
-		printf("|\n");
 	}
-	for(k=0; k<lab->l; k++)  printf("+-----");
-	printf("+\n");
+
+	for(i=0; i<lab->h; i++) {
+		for(j=0; j<lab->l-1; j++) {
+			if((rand() % 100) + 1 >= CHANCE) {
+				lab->tiles[i][j].wall = lab->tiles[i][j].wall & ~RIGHT_WALL;
+				lab->tiles[i][j+1].wall = lab->tiles[i][j+1].wall & ~LEFT_WALL;
+			}
+		}
+	}
+
+	for(i=0; i<lab->h-1; i++) {
+		for(j=0; j<lab->l; j++) {
+			if((rand() % 100) + 1 >= CHANCE) {
+				lab->tiles[i][j].wall = lab->tiles[i][j].wall & ~BOTTOM_WALL;
+				lab->tiles[i+1][j].wall = lab->tiles[i+1][j].wall & ~TOP_WALL;
+			}
+		}
+	}
 }
 
 void displayLabyrinthe2(labyrinthe* lab) {
@@ -56,7 +87,7 @@ void displayLabyrinthe2(labyrinthe* lab) {
 				printTileLeft(&(lab->tiles[i][j]), &(lab->tiles[i][j-1]));
 			else
 				printTileLeft(&(lab->tiles[i][j]), NULL);
-
+			printTile(&(lab->tiles[i][j]));
 		}
 		printf("|\n");	
 	}
