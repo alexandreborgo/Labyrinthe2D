@@ -64,8 +64,8 @@ void saveLabyrinthe(labyrinthe* l, char* filename) {
 	for(i=0; i<l->h; i++) {
 		for(j=0; j<l->l; j++) {
 			// keep only walls, in and out
-			int flags = l->tiles[i][j].flags & CLEAN_FLAG;
-			fprintf(f, "%d ", flags);
+			l->tiles[i][j].flags &= ~(VISITED | ROCK | GUY);
+			fprintf(f, "%d ", l->tiles[i][j].flags);
 		}
 		fprintf(f, "\n");
 	}
