@@ -4,6 +4,17 @@
 #include "labyrinthe.h"
 #include "tile.h"
 
+/* ==================== DEBUG ==================== */
+
+void printBin2(int b) {
+	int i;
+	for(i=15; i>=0; i--)
+		printf("%d", (b>>i)&1);
+	printf("\n");
+}
+
+/* ==================== FUNC ==================== */
+
 labyrinthe* allocLabyrinthe() {
 	return malloc(sizeof(labyrinthe));
 }
@@ -13,18 +24,33 @@ void freeLabyrinthe(labyrinthe* lab) {
 	free(lab);
 }
 
-void initLabyrinthe(labyrinthe* lab, int h, int l) {
-	lab->h = h;
-	lab->l = l;
-	lab->tiles = allocTiles(h, l);
+void initLabyrintheFromFile(labyrinthe* l, char* filename) {
+	FILE* f = fopen(filename, "r");
+	fscanf(f, "%d %d", &(l->h), &(l->l));
+	l->tiles = allocTiles(l->h, l->l);
+
+	fscanf(f, "%d %d", &(l->x_in), &(l->y_in));
+	fscanf(f, "%d %d", &(l->x_ou), &(l->y_ou));
 
 	int i, j;
-	for(i=0; i<lab->h; i++) {
-		for(j=0; j<lab->l; j++) {
-			int flags = rand() % 15;
-			initTile(&(lab->tiles[i][j]), i, j, flags);
+	for(i=0; i<l->h; i++) {
+		for(j=0; j<l->l; j++) {
+			int tmp = 0;
+			fscanf(f, "%d", &tmp);
+
+			if(l->x_in == j && l->y_in == i) {
+				tmp |= IN | GUY;
+			}
+			else if(l->x_ou == j && l->y_ou == i) {
+				tmp |= OUT;
+			}
+
+			initTile(&(l->tiles[i][j]), j, i, tmp);
+			printf("%d => ", tmp);
+			printBin2(l->tiles[i][j].flags);
 		}
 	}
+	fclose(f);
 }
 
 void generateLabyrinthe(labyrinthe* lab, int h, int l) {
