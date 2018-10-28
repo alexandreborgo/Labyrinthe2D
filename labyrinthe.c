@@ -3,6 +3,7 @@
 
 #include "labyrinthe.h"
 #include "tile.h"
+#include "play.h"
 
 /* ==================== DEBUG ==================== */
 
@@ -115,6 +116,20 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 			if((rand() % 100) + 1 >= CHANCE) {
 				lab->tiles[i][j].flags = lab->tiles[i][j].flags & ~BOTTOM_WALL;
 				lab->tiles[i+1][j].flags = lab->tiles[i+1][j].flags & ~TOP_WALL;
+			}
+		}
+	}
+	
+	if(!run_try(lab, &(lab->tiles[lab->y_in][lab->x_in]))) {
+		// no path, so we generate another one
+		generateLabyrinthe(lab, h, l);
+	}
+	else {
+		// this block is inside a else to execute it only if a good labyrinthe is generated
+		int i, j;
+		for(i=0; i<lab->h; i++) {
+			for(j=0; j<lab->l; j++) {
+				lab->tiles[i][j].flags &= ~(VISITED);
 			}
 		}
 	}

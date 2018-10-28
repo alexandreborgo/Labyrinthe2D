@@ -9,5 +9,6 @@
 #define RIGHT 4 // 0000 0100
 
 int run2(labyrinthe* l, tile* t);
+int run_try(labyrinthe* l, tile* t) ;
 
 #endif

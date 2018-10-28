@@ -77,3 +77,24 @@ int run2(labyrinthe* l, tile* t) {
     t->flags &= ~GUY;
     return 0;
 }
+
+/*  same as run without display
+    to find out if there's a solution
+    in order to create coherant labyrinthe
+*/
+int run_try(labyrinthe* l, tile* t) {
+    if(t->flags & OUT) return 1;    
+    t->flags |= VISITED;    
+    char dir;
+    for(dir=LEFT; dir<=TOP; dir=dir<<1) {
+        if(!(t->flags & dir)) {
+            tile* tl = getCaseInDir(l, t, dir);
+            if(!(tl->flags & VISITED)) {
+                if(run_try(l, tl) == 1) {
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
