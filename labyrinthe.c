@@ -77,8 +77,12 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	lab->tiles = allocTiles(h, l);
 	lab->x_in = rand() % lab->l;
 	lab->y_in = rand() % lab->h;
-	lab->x_ou = rand() % lab->l;
-	lab->y_ou = rand() % lab->h;
+	
+	do {
+		lab->x_ou = rand() % lab->l;
+		lab->y_ou = rand() % lab->h;
+		printf("%d %d\n", lab->x_ou, lab->y_ou);
+	} while(lab->x_ou == lab->x_in && lab->y_ou == lab->y_in);
 
 	int i, j;
 	for(i=0; i<lab->h; i++) {

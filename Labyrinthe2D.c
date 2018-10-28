@@ -25,7 +25,7 @@ int main() {
 
 	while(1==1) {
     	system("clear");
-		printf("Labyrinthe2D\n");
+		printf("Labyrinthe2D\n\n");
 		printf("1. Labyrinthe from file\n");
 		printf("2. Ramdom Labyrinthe\n");
 		printf("0. Quit\n");
@@ -45,11 +45,15 @@ int main() {
 				initLabyrintheFromFile(lab, input);
 			}
 			else {
-				printf("Size of the labyrinthe?\n");
-				printf("Length? ");
-				scanf("%d", &h);
-				printf("Width? ");
-				scanf("%d", &l);
+				printf("Size of the labyrinthe? Minimum size: (2,2)\n");
+				do {
+					printf("Length? ");
+					scanf("%d", &h);
+				} while(h < 2);
+				do {
+					printf("Width? ");
+					scanf("%d", &l);
+				} while(l < 2);
 				generateLabyrinthe(lab, h, l);
 			}
 
