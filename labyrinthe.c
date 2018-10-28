@@ -122,6 +122,7 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	
 	if(!run_try(lab, &(lab->tiles[lab->y_in][lab->x_in]))) {
 		// no path, so we generate another one
+		freeTiles(lab->tiles, lab->h);
 		generateLabyrinthe(lab, h, l);
 	}
 	else {
