@@ -47,8 +47,6 @@ void initLabyrintheFromFile(labyrinthe* l, char* filename) {
 			}
 
 			initTile(&(l->tiles[i][j]), j, i, tmp);
-			printf("%d => ", tmp);
-			printBin2(l->tiles[i][j].flags);
 		}
 	}
 	fclose(f);
@@ -82,7 +80,6 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	do {
 		lab->x_ou = rand() % lab->l;
 		lab->y_ou = rand() % lab->h;
-		printf("%d %d\n", lab->x_ou, lab->y_ou);
 	} while(lab->x_ou == lab->x_in && lab->y_ou == lab->y_in);
 
 	int i, j;

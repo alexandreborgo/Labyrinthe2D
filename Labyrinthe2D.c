@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "labyrinthe.h"
 #include "play.h"
@@ -19,7 +20,7 @@ void emptyShittyBuffer() {
 int main() {
 	srand(time(NULL));
 
-	char choice;
+	char choice[10];
 	char input[50];
 	int h, l;
 
@@ -30,32 +31,25 @@ int main() {
 		printf("2. Ramdom Labyrinthe\n");
 		printf("0. Quit\n");
 
-		scanf("%c", &choice);
+		scanf("%s", choice);
 
-		if(choice == '0') {
+		if(*choice == '0') {
 			break;
-		}
-		
-		if(choice == '1' || choice == '2') {
+		}		
+		else if(*choice == '1') {
 			labyrinthe* lab = allocLabyrinthe();
+
+			printf("Name of the file to load? ");
+			scanf("%s", input);
+			if(access(input, F_OK ) != 0) {
+				printf("Can't open file '%s' (check name or permissions).\n", input);
+				emptyShittyBuffer();
+				printf("Press any key to continue...");
+				getchar();
+				continue;
+			}
+			initLabyrintheFromFile(lab, input);
 			
-			if(choice == '1') {
-				printf("Name of the file to load? ");
-				scanf("%s", input);
-				initLabyrintheFromFile(lab, input);
-			}
-			else {
-				printf("Size of the labyrinthe? Minimum size: (2,2)\n");
-				do {
-					printf("Length? ");
-					scanf("%d", &h);
-				} while(h < 2);
-				do {
-					printf("Width? ");
-					scanf("%d", &l);
-				} while(l < 2);
-				generateLabyrinthe(lab, h, l);
-			}
 
 			if(run2(lab, &(lab->tiles[lab->y_in][lab->x_in])) == 1)
 				printf("%s🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂%s", YEL, NRM);
@@ -63,29 +57,42 @@ int main() {
 				printf("%s🙁🙁🙁🙁🙁🙁🙁🙁🙁🙁%s", RED, NRM);
 			printf("\n");
 
-			if(choice == '2') {
-				emptyShittyBuffer();
-				printf("Do you want to save this labyrinthe? [y/n] ");
-				scanf("%c", input);
-	
-				if(input[0] == 'y') {
-					printf("Name of the file to save the labyrinthe? ");
-					scanf("%s", input);
-					saveLabyrinthe(lab, input);
-				}
-			}
-
 			emptyShittyBuffer();
 			printf("Press any key to continue...");
 			getchar();
 
 			freeLabyrinthe(lab);
 		}
+		else if(*choice == '2') {
+			labyrinthe* lab = allocLabyrinthe();
+
+			printf("Size of the labyrinthe? Minimum size: (2,2)\n");
+			do {
+				printf("Length? ");
+				scanf("%d", &h);
+			} while(h < 2);
+			do {
+				printf("Width? ");
+				scanf("%d", &l);
+			} while(l < 2);
+			generateLabyrinthe(lab, h, l);
+
+			emptyShittyBuffer();
+			printf("Do you want to save this labyrinthe? [y/n] ");
+			scanf("%c", input);
+
+			if(input[0] == 'y') {
+				printf("Name of the file to save the labyrinthe? ");
+				scanf("%s", input);
+				saveLabyrinthe(lab, input);
+			}
+
+			freeLabyrinthe(lab);
+		}
 	}
 
-	printf("bye\n");
+	printf("bye 🙂\n");
 
-	
 	return 0;
 }
 
