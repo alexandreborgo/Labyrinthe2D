@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "labyrinthe.h"
+#include "labyrinth.h"
 #include "tile.h"
 #include "play.h"
 
@@ -16,16 +16,16 @@ void printBin2(int b) {
 
 /* ==================== FUNC ==================== */
 
-labyrinthe* allocLabyrinthe() {
-	return malloc(sizeof(labyrinthe));
+labyrinth* allocLabyrinth() {
+	return malloc(sizeof(labyrinth));
 }
 
-void freeLabyrinthe(labyrinthe* lab) {
+void freeLabyrinth(labyrinth* lab) {
 	freeTiles(lab->tiles, lab->h);
 	free(lab);
 }
 
-void initLabyrintheFromFile(labyrinthe* l, char* filename) {
+int initLabyrinthFromFile(labyrinth* l, char* filename) {
 	FILE* f = fopen(filename, "r");
 	fscanf(f, "%d %d", &(l->h), &(l->l));
 	l->tiles = allocTiles(l->h, l->l);
@@ -42,7 +42,7 @@ void initLabyrintheFromFile(labyrinthe* l, char* filename) {
 			if(l->x_in == j && l->y_in == i) {
 				tmp |= IN | GUY;
 			}
-			else if(l->x_ou == j && l->y_ou == i) {
+			if(l->x_ou == j && l->y_ou == i) {
 				tmp |= OUT;
 			}
 
@@ -50,9 +50,40 @@ void initLabyrintheFromFile(labyrinthe* l, char* filename) {
 		}
 	}
 	fclose(f);
+
+	// check if the lab is coherent
+
+	int errors = 0;
+
+	if(l->x_ou == l->x_in && l->y_ou == l->y_in) {
+		printf("%sThe exit of the labyrinth is on the same case as the entrance!%s\n", RED, NRM);
+		errors++;
+	}
+
+	for(i=0; i<l->h; i++) {
+		for(j=0; j<l->l-1; j++) {			
+			int wall1 = l->tiles[i][j].flags & RIGHT_WALL;
+			int wall2 = l->tiles[i][j+1].flags & LEFT_WALL;
+			if(wall1 == RIGHT_WALL && wall2 != LEFT_WALL || wall1 != RIGHT_WALL && wall2 == LEFT_WALL) {
+				errors++;
+				printf("%sError on the wall between case (%d,%d) and case (%d,%d)!%s\n", RED, j, i, j+1, i, NRM);
+			}
+		}
+	}
+	for(i=0; i<l->h-1; i++) {
+		for(j=0; j<l->l; j++) {
+			int wall1 = l->tiles[i][j].flags & BOTTOM_WALL;
+			int wall2 = l->tiles[i+1][j].flags & TOP_WALL;
+			if(wall1 == BOTTOM_WALL && wall2 != TOP_WALL || wall1 != BOTTOM_WALL && wall2 == TOP_WALL) {
+				errors++;
+				printf("%sError on the wall between case (%d,%d) and case (%d,%d)!%s\n", RED, j, i, j, i+1, NRM);
+			}
+		}
+	}
+	return errors;		
 }
 
-void saveLabyrinthe(labyrinthe* l, char* filename) {
+void saveLabyrinth(labyrinth* l, char* filename) {
 	FILE* f = fopen(filename, "w");
 	fprintf(f, "%d %d ", l->h, l->l);
 	fprintf(f, "%d %d ", l->x_in, l->y_in);
@@ -67,10 +98,10 @@ void saveLabyrinthe(labyrinthe* l, char* filename) {
 		}
 		fprintf(f, "\n");
 	}
-	fclose(f);
+	fclose(f);	
 }
 
-void generateLabyrinthe(labyrinthe* lab, int h, int l) {
+void generateLabyrinth(labyrinth* lab, int h, int l) {
 	lab->h = h;
 	lab->l = l;
 	lab->tiles = allocTiles(h, l);
@@ -120,10 +151,10 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	if(!run_try(lab, &(lab->tiles[lab->y_in][lab->x_in]))) {
 		// no path, so we generate another one
 		freeTiles(lab->tiles, lab->h);
-		generateLabyrinthe(lab, h, l);
+		generateLabyrinth(lab, h, l);
 	}
 	else {
-		// this block is inside a else to execute it only if a good labyrinthe is generated
+		// this block is inside a else to execute it only if a good labyrinth is generated
 		int i, j;
 		for(i=0; i<lab->h; i++) {
 			for(j=0; j<lab->l; j++) {
@@ -133,7 +164,7 @@ void generateLabyrinthe(labyrinthe* lab, int h, int l) {
 	}
 }
 
-void displayLabyrinthe2(labyrinthe* lab) {
+void displayLabyrinth2(labyrinth* lab) {
 	int i, j, k;
 	for(i=0; i<lab->h; i++) {
 		for(j=0; j<lab->l; j++) {

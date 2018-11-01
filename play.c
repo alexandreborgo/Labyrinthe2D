@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #include "play.h"
-#include "labyrinthe.h"
+#include "labyrinth.h"
 #include "tile.h"
 
 /* ==================== DEBUG ==================== */
@@ -28,26 +28,39 @@ void printDir(int dir) {
 }
 
 /* ==================== FUNC ==================== */
-
-tile* getCaseInDir(labyrinthe* l, tile* t, int dir) {
-    if(dir == TOP)
-        return &(l->tiles[t->y-1][t->x]);
-    else if(dir == LEFT)
-        return &(l->tiles[t->y][t->x-1]);
-    else if(dir == RIGHT)
-        return &(l->tiles[t->y][t->x+1]);
-    else if(dir == BOTTOM)
-        return &(l->tiles[t->y+1][t->x]);
+// labyrinths/incoherent.lab
+tile* getCaseInDir(labyrinth* l, tile* t, int dir) {
+    if(dir == TOP) {
+        if(t->y-1 >= 0) {
+            return &(l->tiles[t->y-1][t->x]);
+        }
+    }
+    else if(dir == LEFT) {
+        if(t->x-1 >= 0) {
+            return &(l->tiles[t->y][t->x-1]);
+        }
+    }
+    else if(dir == RIGHT) {
+        if(t->x+1 < l->l) {
+            return &(l->tiles[t->y][t->x+1]);
+        }
+    }
+    else if(dir == BOTTOM) {
+        if(t->y+1 < l->h) {
+            return &(l->tiles[t->y+1][t->x]);
+        }
+    }
+    return NULL;
 }
 
-void display(labyrinthe* l) {
+void display(labyrinth* l) {
     system("clear");
-	displayLabyrinthe2(l);
+	displayLabyrinth2(l);
     sleep(1);
 }
 
 /* depth-first search */
-int run2(labyrinthe* l, tile* t) {
+int run2(labyrinth* l, tile* t) {
     t->flags |= ROCK;
     t->flags |= GUY;
 
@@ -61,15 +74,18 @@ int run2(labyrinthe* l, tile* t) {
     for(dir=LEFT; dir<=TOP; dir=dir<<1) {        
         // check if there's a wall
         if(!(t->flags & dir)) {
-            // check if the guy already visited the tile or not
             tile* tl = getCaseInDir(l, t, dir);
-            if(!(tl->flags & VISITED)) {
-                t->flags &= ~GUY;
-                if(run2(l, tl) == 1) {
-                    return 1;
+            // check if the tile is inside the lab
+            if(tl != NULL) {
+                // check if the guy already visited the tile or not                
+                if(!(tl->flags & VISITED)) {
+                    t->flags &= ~GUY;
+                    if(run2(l, tl) == 1) {
+                        return 1;
+                    }
+                    t->flags |= GUY;
+                    display(l);
                 }
-                t->flags |= GUY;
-                display(l);
             }
         }
     }
@@ -80,9 +96,9 @@ int run2(labyrinthe* l, tile* t) {
 
 /*  same as run without display
     to find out if there's a solution
-    in order to create coherant labyrinthe
+    in order to create coherant labyrinth
 */
-int run_try(labyrinthe* l, tile* t) {
+int run_try(labyrinth* l, tile* t) {
     if(t->flags & OUT) return 1;    
     t->flags |= VISITED;    
     char dir;

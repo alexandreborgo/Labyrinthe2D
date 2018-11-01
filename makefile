@@ -6,14 +6,14 @@ play.o: play.c play.h
 tile.o: tile.c tile.h
 	gcc -c tile.c
 
-labyrinthe.o: labyrinthe.c labyrinthe.h tile.h
-	gcc -c labyrinthe.c
+labyrinth.o: labyrinth.c labyrinth.h tile.h
+	gcc -c labyrinth.c
 
-Labyrinthe2D.o: Labyrinthe2D.c labyrinthe.h
-	gcc -c Labyrinthe2D.c
+Labyrinth2D.o: Labyrinth2D.c labyrinth.h
+	gcc -c Labyrinth2D.c
 
-do: tile.o labyrinthe.o Labyrinthe2D.o play.o
-	gcc -o Labyrinthe2D Labyrinthe2D.o labyrinthe.o tile.o play.o
+do: tile.o labyrinth.o Labyrinth2D.o play.o
+	gcc -o Labyrinth2D Labyrinth2D.o labyrinth.o tile.o play.o -lncurses
 
 clean: 
 	rm *.o
