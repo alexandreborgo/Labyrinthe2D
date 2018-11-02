@@ -105,7 +105,6 @@ int main() {
 		labyrinth* lab = allocLabyrinth();
 
 		if(i == 0) {
-
 			DIR *d;
 			struct dirent *dir;
 			char files_options[50][50];
@@ -121,7 +120,7 @@ int main() {
 			}
 			sprintf(files_options[index++], "Return");
 			int last = index-1;
-			index = menu(index, 50, files_options, "Name of the file to load the labyrinth? Labyrinth files should be placed in the sub folder labyrinths.");
+			index = menu(index, 50, files_options, "Name of the file to load? Labyrinth files should be placed in the sub folder labyrinths.");
 
 			if(index == last) {
 				continue;
@@ -136,15 +135,20 @@ int main() {
 			printf("Loading labyrinth from file %s...\n", files_options[index]);
 			int errors = initLabyrinthFromFile(lab, files_options[index]);
 
-			if(errors != 0) {
+			if(errors == -1) {
+				printf("%sFatal error couldn't use this labyrinth!%s\n", RED, NRM);		
+				printf("Press any key to return to the menu...");
+				getchar();
+				continue;
+			}
+			else if(errors != 0) {
 				printf("This labyrinth is poorly formed (%d errors). Do you still want to load it? [y/n] ", errors);
 				scanf("%c", input);
 				getchar();
 
 				if(input[0] != 'y') {
 					continue;
-				}
-				
+				}				
 			}
 			play(lab);
 

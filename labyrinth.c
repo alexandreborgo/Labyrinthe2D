@@ -32,6 +32,18 @@ int initLabyrinthFromFile(labyrinth* l, char* filename) {
 
 	fscanf(f, "%d %d", &(l->x_in), &(l->y_in));
 	fscanf(f, "%d %d", &(l->x_ou), &(l->y_ou));
+			
+	if(l->x_ou < 0 || l->y_ou >= l->l) {
+		printf("%sThe exit of the labyrinth is not in the labyrinth!%s\n", RED, NRM);
+		freeLabyrinth(l);
+		return -1;
+	}
+
+	if(l->x_in < 0 || l->y_in >= l->h) {
+		printf("%sThe entrance of the labyrinth is not in the labyrinth!%s\n", RED, NRM);
+		freeLabyrinth(l);
+		return -1;
+	}
 
 	int i, j;
 	for(i=0; i<l->h; i++) {
